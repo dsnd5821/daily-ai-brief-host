@@ -1,0 +1,348 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Daily AI Brief Sender - Today</title>
+  <style>
+    :root { color-scheme: dark; }
+    body { margin: 0; padding: 32px; font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: linear-gradient(180deg, #08111f, #111827 48%, #0f172a); color: #e5e7eb; }
+    .wrap { max-width: 980px; margin: 0 auto; }
+    .card { background: rgba(17, 24, 39, 0.92); border: 1px solid rgba(148, 163, 184, 0.2); border-radius: 18px; box-shadow: 0 30px 80px rgba(0,0,0,.35); padding: 24px 26px; }
+    h1 { margin: 0 0 10px; font-size: 28px; letter-spacing: -0.02em; }
+    p { margin: 10px 0; line-height: 1.7; color: #cbd5e1; }
+    label { display: block; margin-top: 14px; margin-bottom: 6px; color: #cbd5e1; font-weight: 600; }
+    input { width: 100%; box-sizing: border-box; border: 1px solid rgba(148, 163, 184, 0.25); border-radius: 12px; background: rgba(15, 23, 42, 0.92); color: #e5e7eb; padding: 12px 14px; font: inherit; }
+    input:focus { outline: 2px solid rgba(96, 165, 250, 0.55); outline-offset: 1px; }
+    button { margin-top: 16px; border: 0; border-radius: 999px; padding: 12px 18px; background: linear-gradient(135deg, #38bdf8, #60a5fa); color: #08111f; font-weight: 800; cursor: pointer; }
+    button:disabled { opacity: 0.55; cursor: not-allowed; }
+    #status { margin-top: 18px; padding: 14px 16px; background: rgba(15, 23, 42, 0.9); border: 1px solid rgba(96, 165, 250, 0.18); border-radius: 12px; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; white-space: pre-wrap; min-height: 54px; }
+    ol { margin: 18px 0 0 22px; color: #dbeafe; line-height: 1.75; }
+    code { background: rgba(15, 23, 42, 0.8); padding: 2px 6px; border-radius: 8px; }
+    .hint { color: #94a3b8; font-size: 14px; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="card">
+      <h1>Daily AI Brief Sender - Today</h1>
+      <p>Paste your bot token below and click <strong>Start sending</strong>. This page generates themed 16:9 images locally in the browser, then uploads them to Telegram as files.</p>
+      <p class="hint">Today’s set avoids yesterday’s duplicate stories and is refreshed for 2026-05-22.</p>
+
+      <label for="token">Bot token</label>
+      <input id="token" type="password" placeholder="8879…" autocomplete="off">
+
+      <label for="chat">Chat ID</label>
+      <input id="chat" type="text" value="-1003777125000" autocomplete="off">
+
+      <button id="start">Start sending</button>
+      <div id="status">Idle.</div>
+
+      <ol>
+        <li>Trump postpones AI executive order</li>
+        <li>White House briefs AI firms on model review</li>
+        <li>Anthropic explores Microsoft AI chips</li>
+        <li>Lambda lands cloud deal with HRT</li>
+        <li>OpenAI breaks 80-year math problem</li>
+      </ol>
+    </div>
+  </div>
+
+  <script>
+    const tokenInput = document.getElementById('token');
+    const chatInput = document.getElementById('chat');
+    const startButton = document.getElementById('start');
+    const status = document.getElementById('status');
+
+    const items = [
+      {
+        kind: 'policy',
+        caption: `2026-05-22｜AI 每日简报\n\n【AI 大事 1/5】特朗普推迟签署 AI 行政令\n\n一句话结论：美国 AI 监管与创新的拉扯又往前推了一步。\n\n发生了什么：\n- AP 报道，特朗普取消了原定的 AI 行政令签署活动。\n- 这份命令原本会建立政府审查最先进 AI 系统安全风险的框架。\n\n为什么重要：白宫对模型审查的态度，会直接影响美国 AI 企业的发布节奏、合规成本和全球竞争策略。\n\n评分：\n影响力：★★★★★\n热度：★★★★★\n推荐阅读：高\n\n链接：\n来源：https://apnews.com/article/trump-ai-executive-order-ee318f35acc8a2c43e47f3ebf26cb459`
+      },
+      {
+        kind: 'policy-review',
+        caption: `【AI 大事 2/5】白宫向 AI 公司通报模型审查计划\n\n一句话结论：美国政府正把“先进模型上线前审查”推到更具体的政策层。\n\n发生了什么：\n- Reuters 报道，白宫国安办公室向领先 AI 公司简报一项拟议中的行政令。\n- 方案可能让情报和相关政府机构在模型发布前参与审查。\n\n为什么重要：如果模型审查机制常态化，前沿模型的发布、评测和政府合作都会被重新定价。\n\n评分：\n影响力：★★★★☆\n热度：★★★★☆\n推荐阅读：高\n\n链接：\n来源：https://www.investing.com/news/stock-market-news/white-house-briefs-ai-firms-on-plans-for-model-review-the-information-reports-4702178`
+      },
+      {
+        kind: 'chips',
+        caption: `【AI 大事 3/5】Anthropic 传出接洽 Microsoft AI 芯片\n\n一句话结论：大模型公司在计算力上继续“多云、多芯片”布局。\n\n发生了什么：\n- Reuters 报道，Anthropic 正在与微软讨论使用其 AI 芯片做推理任务。\n- 这说明 Claude 的算力供给还在继续扩张和多元化。\n\n为什么重要：前沿模型竞赛本质上也是算力合同、推理成本和供应链稳定性的竞争。\n\n评分：\n影响力：★★★★☆\n热度：★★★☆☆\n推荐阅读：中\n\n链接：\n来源：https://www.investing.com/news/stock-market-news/anthropic-in-talks-to-use-microsoft-s-ai-chips-the-information-reports-ce7f5adedc8cf726`
+      },
+      {
+        kind: 'datacenter',
+        caption: `【AI 大事 4/5】Lambda 拿下 Hudson River Trading 云合作\n\n一句话结论：AI 算力租赁继续向高频交易等高要求客户渗透。\n\n发生了什么：\n- Reuters 报道，Lambda 赢得 Hudson River Trading 的云合同。\n- 合同核心是提供 Nvidia 芯片访问，用于 AI 训练与推理。\n\n为什么重要：这类合作说明 Nvidia 生态之外，围绕 GPU 的云服务和租赁市场仍在快速扩张。\n\n评分：\n影响力：★★★★☆\n热度：★★★☆☆\n推荐阅读：中\n\n链接：\n来源：https://www.investing.com/news/stock-market-news/lambda-wins-cloud-deal-with-hudson-river-trading-to-supply-access-to-nvidia-chips-4701550`
+      },
+      {
+        kind: 'math',
+        caption: `【AI 大事 5/5】OpenAI 公开一项 80 年数学难题突破\n\n一句话结论：AI 正开始在可验证的数学研究里做出真正的新发现。\n\n发生了什么：\n- OpenAI 发布研究，称内部模型否定了离散几何中的一个核心猜想。\n- 该结果围绕 Erdős 在 1946 年提出的平面单位距离问题。\n\n为什么重要：如果通用推理模型能独立产出可验证证明，AI 不只是写作与编码助手，也可能成为研究伙伴。\n\n评分：\n影响力：★★★★★\n热度：★★★★☆\n推荐阅读：高\n\n链接：\n来源：https://openai.com/index/model-disproves-discrete-geometry-conjecture/`
+      }
+    ];
+
+    function sleep(ms) { return new Promise(resolve => setTimeout(resolve, ms)); }
+
+    function drawBackground(ctx, w, h, palette) {
+      const g = ctx.createLinearGradient(0, 0, w, h);
+      g.addColorStop(0, palette[0]);
+      g.addColorStop(0.55, palette[1]);
+      g.addColorStop(1, palette[2]);
+      ctx.fillStyle = g;
+      ctx.fillRect(0, 0, w, h);
+
+      ctx.globalAlpha = 0.18;
+      for (let i = 0; i < 18; i++) {
+        ctx.fillStyle = i % 2 ? '#fff' : '#60a5fa';
+        ctx.beginPath();
+        ctx.arc((i * 93 + 120) % w, (i * 57 + 180) % h, 42 + (i % 4) * 8, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      ctx.globalAlpha = 1;
+    }
+
+    function cardFrame(ctx, w, h, title, subtitle, accent) {
+      ctx.fillStyle = 'rgba(10, 15, 26, 0.38)';
+      ctx.fillRect(0, 0, w, h);
+
+      ctx.strokeStyle = 'rgba(255,255,255,0.18)';
+      ctx.lineWidth = 8;
+      ctx.strokeRect(24, 24, w - 48, h - 48);
+
+      ctx.fillStyle = accent;
+      ctx.fillRect(48, 48, 180, 8);
+      ctx.fillRect(48, h - 56, 220, 8);
+
+      ctx.fillStyle = '#fff';
+      ctx.font = '700 66px ui-sans-serif, system-ui, -apple-system, Segoe UI, sans-serif';
+      ctx.fillText(title, 60, 110);
+      ctx.fillStyle = 'rgba(255,255,255,0.86)';
+      ctx.font = '500 30px ui-sans-serif, system-ui, -apple-system, Segoe UI, sans-serif';
+      wrapText(ctx, subtitle, 60, 160, 920, 40);
+    }
+
+    function wrapText(ctx, text, x, y, maxWidth, lineHeight) {
+      const paragraphs = text.split('\n');
+      let cy = y;
+      for (const p of paragraphs) {
+        const words = p.split(' ');
+        let line = '';
+        for (const word of words) {
+          const test = line ? line + ' ' + word : word;
+          if (ctx.measureText(test).width > maxWidth && line) {
+            ctx.fillText(line, x, cy);
+            line = word;
+            cy += lineHeight;
+          } else {
+            line = test;
+          }
+        }
+        if (line) {
+          ctx.fillText(line, x, cy);
+          cy += lineHeight;
+        }
+        cy += 8;
+      }
+    }
+
+    function drawPolicy(ctx, w, h) {
+      drawBackground(ctx, w, h, ['#10172c', '#172554', '#0f172a']);
+      cardFrame(ctx, w, h, 'Policy', 'White House / governance / AI oversight', '#f59e0b');
+      ctx.fillStyle = 'rgba(255,255,255,0.9)';
+      ctx.beginPath();
+      ctx.moveTo(300, 720); ctx.lineTo(300, 520); ctx.lineTo(340, 480); ctx.lineTo(380, 520); ctx.lineTo(380, 720); ctx.closePath(); ctx.fill();
+      ctx.fillRect(280, 720, 520, 28);
+      ctx.fillRect(320, 430, 440, 32);
+      ctx.fillRect(360, 360, 360, 36);
+      ctx.fillStyle = 'rgba(255,255,255,0.75)';
+      for (let i = 0; i < 5; i++) ctx.fillRect(430 + i*58, 550, 22, 170);
+      ctx.fillStyle = '#ef4444';
+      ctx.fillRect(840, 250, 270, 340);
+      ctx.fillStyle = '#fff';
+      ctx.font = '700 42px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace';
+      ctx.fillText('AI ORDER', 870, 330);
+      ctx.fillText('REVIEW', 885, 390);
+      ctx.beginPath(); ctx.arc(980, 490, 96, 0, Math.PI * 2); ctx.strokeStyle = '#fff'; ctx.lineWidth = 16; ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(950, 490); ctx.lineTo(980, 530); ctx.lineTo(1030, 450); ctx.stroke(); ctx.lineWidth = 18; ctx.lineCap = 'round';
+      ctx.globalAlpha = 0.25;
+      for (let i = 0; i < 7; i++) { ctx.fillRect(150 + i*120, 820 - i*6, 64, 6); }
+      ctx.globalAlpha = 1;
+    }
+
+    function drawPolicyReview(ctx, w, h) {
+      drawBackground(ctx, w, h, ['#08111f', '#12213a', '#111827']);
+      cardFrame(ctx, w, h, 'Policy Review', 'Model evaluation / national security / guardrails', '#22c55e');
+      ctx.strokeStyle = 'rgba(255,255,255,0.9)';
+      ctx.lineWidth = 10;
+      ctx.strokeRect(320, 250, 520, 400);
+      ctx.fillStyle = 'rgba(34,197,94,0.16)';
+      ctx.fillRect(320, 250, 520, 400);
+      ctx.fillStyle = '#fff';
+      ctx.font = '700 54px ui-sans-serif, system-ui';
+      ctx.fillText('MODEL', 470, 380);
+      ctx.fillText('REVIEW', 455, 450);
+      ctx.beginPath(); ctx.moveTo(835, 300); ctx.lineTo(1020, 490); ctx.strokeStyle = '#93c5fd'; ctx.lineWidth = 14; ctx.stroke();
+      ctx.beginPath(); ctx.arc(1020, 490, 58, 0, Math.PI * 2); ctx.strokeStyle = '#93c5fd'; ctx.lineWidth = 12; ctx.stroke();
+      ctx.fillStyle = '#93c5fd';
+      ctx.fillRect(920, 650, 250, 18);
+      ctx.fillRect(930, 680, 180, 18);
+      ctx.fillRect(940, 710, 220, 18);
+    }
+
+    function drawChips(ctx, w, h) {
+      drawBackground(ctx, w, h, ['#08111f', '#0f172a', '#1e293b']);
+      cardFrame(ctx, w, h, 'Compute', 'Chips / cloud / inference supply', '#38bdf8');
+      for (let y = 220; y < 760; y += 92) {
+        ctx.strokeStyle = 'rgba(148,163,184,0.34)';
+        ctx.lineWidth = 3;
+        ctx.beginPath(); ctx.moveTo(260, y); ctx.lineTo(1120, y); ctx.stroke();
+      }
+      for (let x = 260; x <= 1120; x += 80) {
+        ctx.fillStyle = 'rgba(56,189,248,0.28)';
+        ctx.fillRect(x, 270, 14, 420);
+      }
+      ctx.fillStyle = '#0b1220';
+      ctx.fillRect(540, 300, 300, 300);
+      ctx.strokeStyle = '#93c5fd';
+      ctx.lineWidth = 10;
+      ctx.strokeRect(540, 300, 300, 300);
+      for (let i = 0; i < 6; i++) {
+        ctx.fillStyle = '#93c5fd';
+        ctx.fillRect(500, 330 + i * 42, 24, 12);
+        ctx.fillRect(840, 330 + i * 42, 24, 12);
+      }
+      ctx.fillStyle = '#fff';
+      ctx.font = '700 38px ui-sans-serif, system-ui';
+      ctx.fillText('MSFT', 645, 440);
+      ctx.fillText('AI CHIP', 625, 490);
+      ctx.globalAlpha = 0.25;
+      for (let i = 0; i < 12; i++) {
+        ctx.beginPath(); ctx.arc(110 + i*88, 690 - (i % 3)*28, 18, 0, Math.PI * 2); ctx.fillStyle = '#22c55e'; ctx.fill();
+      }
+      ctx.globalAlpha = 1;
+    }
+
+    function drawDatacenter(ctx, w, h) {
+      drawBackground(ctx, w, h, ['#071827', '#10243d', '#0f172a']);
+      cardFrame(ctx, w, h, 'Cloud Deal', 'Data center / GPU racks / high-throughput demand', '#a78bfa');
+      for (let row = 0; row < 5; row++) {
+        for (let col = 0; col < 8; col++) {
+          const x = 230 + col * 110;
+          const y = 250 + row * 110;
+          ctx.fillStyle = row % 2 ? 'rgba(99,102,241,0.22)' : 'rgba(168,85,247,0.18)';
+          ctx.fillRect(x, y, 82, 88);
+          ctx.fillStyle = 'rgba(255,255,255,0.24)';
+          ctx.fillRect(x + 10, y + 12, 62, 8);
+          ctx.fillRect(x + 10, y + 28, 62, 8);
+          ctx.fillRect(x + 10, y + 44, 62, 8);
+        }
+      }
+      ctx.strokeStyle = '#e9d5ff';
+      ctx.lineWidth = 8;
+      ctx.strokeRect(220, 240, 920, 560);
+      ctx.fillStyle = '#e9d5ff';
+      ctx.font = '700 38px ui-sans-serif, system-ui';
+      ctx.fillText('HRT', 980, 720);
+      ctx.fillText('NVIDIA', 900, 770);
+    }
+
+    function drawMath(ctx, w, h) {
+      drawBackground(ctx, w, h, ['#10111c', '#1d2133', '#0f172a']);
+      cardFrame(ctx, w, h, 'Math Breakthrough', 'Discrete geometry / proof / algebraic number theory', '#f97316');
+      ctx.strokeStyle = 'rgba(255,255,255,0.18)';
+      ctx.lineWidth = 2;
+      for (let i = 0; i < 14; i++) {
+        ctx.beginPath(); ctx.moveTo(260 + i * 70, 250); ctx.lineTo(260 + i * 70, 770); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(260, 250 + i * 40); ctx.lineTo(1220, 250 + i * 40); ctx.stroke();
+      }
+      ctx.strokeStyle = '#fb923c';
+      ctx.lineWidth = 5;
+      ctx.beginPath();
+      ctx.moveTo(360, 650); ctx.lineTo(470, 520); ctx.lineTo(590, 580); ctx.lineTo(700, 450); ctx.lineTo(820, 510); ctx.lineTo(960, 370); ctx.stroke();
+      const pts = [[360,650],[470,520],[590,580],[700,450],[820,510],[960,370]];
+      ctx.fillStyle = '#fff';
+      for (const [x, y] of pts) { ctx.beginPath(); ctx.arc(x, y, 14, 0, Math.PI * 2); ctx.fill(); }
+      ctx.fillStyle = 'rgba(255,255,255,0.9)';
+      ctx.font = '700 46px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace';
+      ctx.fillText('n^(1+δ)', 910, 530);
+      ctx.fillText('Erdős', 900, 610);
+      ctx.fillText('1946', 1040, 250);
+    }
+
+    function makeImage(kind) {
+      const canvas = document.createElement('canvas');
+      canvas.width = 1600;
+      canvas.height = 900;
+      const ctx = canvas.getContext('2d');
+      switch (kind) {
+        case 'policy': drawPolicy(ctx, canvas.width, canvas.height); break;
+        case 'policy-review': drawPolicyReview(ctx, canvas.width, canvas.height); break;
+        case 'chips': drawChips(ctx, canvas.width, canvas.height); break;
+        case 'datacenter': drawDatacenter(ctx, canvas.width, canvas.height); break;
+        case 'math': drawMath(ctx, canvas.width, canvas.height); break;
+      }
+      return canvas;
+    }
+
+    function canvasToFile(canvas, filename) {
+      return new Promise((resolve) => {
+        canvas.toBlob((blob) => {
+          resolve(new File([blob], filename, { type: 'image/png' }));
+        }, 'image/png', 0.95);
+      });
+    }
+
+    async function postItem(token, chatId, item, idx) {
+      const file = await canvasToFile(makeImage(item.kind), `brief-${idx + 1}.png`);
+      const sink = document.createElement('iframe');
+      sink.name = `sink-${idx}`;
+      sink.style.display = 'none';
+      document.body.appendChild(sink);
+
+      const form = document.createElement('form');
+      form.method = 'POST';
+      form.action = `https://api.telegram.org/bot${token}/sendPhoto`;
+      form.target = sink.name;
+      form.style.display = 'none';
+
+      const chat = document.createElement('input');
+      chat.type = 'hidden';
+      chat.name = 'chat_id';
+      chat.value = chatId;
+
+      const caption = document.createElement('textarea');
+      caption.name = 'caption';
+      caption.value = item.caption;
+
+      const photo = document.createElement('input');
+      photo.type = 'file';
+      photo.name = 'photo';
+      photo.style.display = 'none';
+      const dt = new DataTransfer();
+      dt.items.add(file);
+      photo.files = dt.files;
+
+      form.append(chat, caption, photo);
+      document.body.appendChild(form);
+      form.submit();
+      setTimeout(() => { form.remove(); sink.remove(); }, 2500);
+    }
+
+    async function sendAll() {
+      const token = tokenInput.value.trim();
+      const chatId = chatInput.value.trim() || '-1003777125000';
+      if (!token) {
+        status.textContent = 'Please enter the bot token first.';
+        return;
+      }
+      startButton.disabled = true;
+      status.textContent = 'Starting…';
+      for (let i = 0; i < items.length; i++) {
+        status.textContent = `Sending ${i + 1}/5`;
+        await postItem(token, chatId, items[i], i);
+        await sleep(2200);
+      }
+      status.textContent = 'Done: 5/5';
+      startButton.disabled = false;
+    }
+
+    startButton.addEventListener('click', sendAll);
+  </script>
+</body>
+</html>
