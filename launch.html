@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Daily AI Brief Sender</title>
+  <style>
+    :root { color-scheme: dark; }
+    body { margin: 0; padding: 32px; font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: linear-gradient(180deg, #0b1120, #111827 50%, #0f172a); color: #e5e7eb; }
+    .wrap { max-width: 900px; margin: 0 auto; }
+    .card { background: rgba(17, 24, 39, 0.92); border: 1px solid rgba(148, 163, 184, 0.2); border-radius: 18px; box-shadow: 0 30px 80px rgba(0,0,0,.35); padding: 24px 26px; }
+    h1 { margin: 0 0 10px; font-size: 28px; letter-spacing: -0.02em; }
+    p { margin: 10px 0; line-height: 1.7; color: #cbd5e1; }
+    #status { margin-top: 18px; padding: 14px 16px; background: rgba(15, 23, 42, 0.9); border: 1px solid rgba(96, 165, 250, 0.18); border-radius: 12px; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; white-space: pre-wrap; }
+    ol { margin: 18px 0 0 22px; color: #dbeafe; line-height: 1.75; }
+    code { background: rgba(15, 23, 42, 0.8); padding: 2px 6px; border-radius: 8px; }
+    .hint { color: #94a3b8; font-size: 14px; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="card">
+      <h1>Daily AI Brief Sender</h1>
+      <p>Open this page with <code>?token=YOUR_BOT_TOKEN</code> and optional <code>&chat=-100...</code>. The token is used only in the browser and is never stored in this file.</p>
+      <p class="hint">This page sequentially posts 5 Telegram image messages to the configured channel.</p>
+      <div id="status">Waiting for token…</div>
+      <ol>
+        <li>Google I/O 2026 / agentic Gemini</li>
+        <li>Nvidia Q1 revenue beat</li>
+        <li>OpenAI content provenance</li>
+        <li>KPMG × Anthropic alliance</li>
+        <li>Anthropic acquires Stainless</li>
+      </ol>
+    </div>
+  </div>
+
+  <script>
+    const params = new URLSearchParams(location.search.replace(/^\?/, ''));
+    const token = params.get('token');
+    const chatId = params.get('chat') || '-1003777125000';
+    const status = document.getElementById('status');
+
+    if (!token) {
+      status.textContent = 'Missing token in URL.';
+      throw new Error('Missing token');
+    }
+
+    const items = [
+      {
+        photo: 'https://blog.google/static/blogv2/images/google-io-2026-collection-social.jpg',
+        caption: `2026-05-22｜AI 每日简报\n\n【AI 大事 1/5】Google I/O 2026 全面押注 Agentic AI\n\n一句话结论：Google 正把 Gemini 从聊天模型推进到能执行任务的产品层 agent。\n\n发生了什么：\n- Google 在 I/O 2026 展示 Gemini、AI Search agents、开发工具、Workspace、YouTube 和设备侧 AI 更新。\n- 核心方向是让 AI 从“回答”变成“搜索、购物、写代码、操作工具”。\n\n为什么重要：Google 控制搜索、Android 和 Workspace 入口，如果 agent 工作流落地，会直接改变用户获取信息和完成任务的方式。\n\n评分：\n影响力：★★★★★\n热度：★★★★★\n推荐阅读：高\n\n链接：\n来源：https://blog.google/innovation-and-ai/technology/developers-tools/google-io-2026-collection/`
+      },
+      {
+        photo: 'https://dims.apnews.com/dims4/default/9828734/2147483647/strip/true/crop/7008x4672%2B0%2B0/resize/320x213%21/quality/90/?url=https%3A%2F%2Fassets.apnews.com%2Fa5%2Fb8%2Fc329ad2dfe5634ad6fbb7acaa528%2F6bb75406a44f461a905c8bd41cf5348e',
+        caption: `【AI 大事 2/5】Nvidia Q1 业绩再度验证 AI 算力需求\n\n一句话结论：AI 数据中心和高端 GPU 需求仍然是 Nvidia 增长核心。\n\n发生了什么：\n- AP 报道 Nvidia 最新季度营收达 816.2 亿美元，同比增长 85%。\n- 公司预计下一季度营收约 910 亿美元，市场仍在为 AI 基础设施扩容。\n\n为什么重要：模型训练、推理、agent 和企业 AI 部署都依赖算力供给，Nvidia 财报是 AI 投资热度的关键温度计。\n\n评分：\n影响力：★★★★★\n热度：★★★★★\n推荐阅读：高\n\n链接：\n来源：https://apnews.com/article/955c699a0c91c423edc81b7903b80f85`
+      },
+      {
+        photo: 'https://images.ctfassets.net/kftzwdyauwt9/31mkAfprcU8WfAB40Kx5c4/4cd7d17569cba68dba28816911cd5547/screenshot-GeneratedWith-yellow.png?fm=webp&q=90&w=3840',
+        caption: `【AI 大事 3/5】OpenAI 强化 AI 图片内容溯源\n\n一句话结论：OpenAI 把 AI 生成图片的“来源验证”推到更正式的平台能力。\n\n发生了什么：\n- OpenAI 宣布采用 C2PA Content Credentials 和 Google SynthID。\n- 同时预览公众验证工具，用来判断图片是否来自 ChatGPT、OpenAI API 或 Codex。\n\n为什么重要：AI 图片越来越难肉眼判断，内容凭证、水印和验证工具会成为媒体、平台和监管的重要基础设施。\n\n评分：\n影响力：★★★★☆\n热度：★★★★☆\n推荐阅读：高\n\n链接：\n来源：https://openai.com/index/advancing-content-provenance/`
+      },
+      {
+        photo: 'https://assets.kpmg.com/is/image/kpmgcloud/kpmg-co-bill-thomas-1%3Acq5dam-web-696-696?hei=696&wid=696',
+        caption: `【AI 大事 4/5】Anthropic 与 KPMG 推动 Claude 企业级部署\n\n一句话结论：大型专业服务公司正在把 AI 从试点推向全员工作流。\n\n发生了什么：\n- KPMG 将让全球 27.6 万+ 员工使用 Claude。\n- 应用场景包括税务、法律、私募股权、网络安全和企业知识工作。\n\n为什么重要：这类部署说明企业 AI 竞争不只看模型能力，也看能否嵌入高价值业务流程。\n\n评分：\n影响力：★★★★☆\n热度：★★★☆☆\n推荐阅读：中\n\n链接：\n来源：https://www.anthropic.com/news/anthropic-kpmg`
+      },
+      {
+        photo: 'https://techcrunch.com/wp-content/uploads/2026/01/GettyImages-2252871842.jpg?w=1024',
+        caption: `【AI 大事 5/5】Anthropic 收购 Stainless，补强 API 与 agent 工具链\n\n一句话结论：模型公司正在争夺开发者工具和 agent 连接能力。\n\n发生了什么：\n- Anthropic 收购 Stainless，后者擅长 SDK、CLI、API 文档和 MCP 工具生成。\n- 这有助于 Claude API 更好接入真实软件系统。\n\n为什么重要：下一阶段 AI 竞争不只是模型分数，也是看谁能更顺畅地连接工具、数据和业务系统。\n\n评分：\n影响力：★★★☆☆\n热度：★★★☆☆\n推荐阅读：中\n\n链接：\n来源：https://www.anthropic.com/news/anthropic-acquires-stainless`
+      }
+    ];
+
+    const sink = document.createElement('iframe');
+    sink.name = 'sink';
+    sink.style.display = 'none';
+    document.body.appendChild(sink);
+
+    let index = 0;
+    let primed = false;
+
+    function postItem(item) {
+      const form = document.createElement('form');
+      form.method = 'POST';
+      form.action = `https://api.telegram.org/bot${token}/sendPhoto`;
+      form.target = 'sink';
+      form.style.display = 'none';
+
+      const chat = document.createElement('input');
+      chat.type = 'hidden';
+      chat.name = 'chat_id';
+      chat.value = chatId;
+
+      const photo = document.createElement('input');
+      photo.type = 'hidden';
+      photo.name = 'photo';
+      photo.value = item.photo;
+
+      const caption = document.createElement('textarea');
+      caption.name = 'caption';
+      caption.value = item.caption;
+
+      form.append(chat, photo, caption);
+      document.body.appendChild(form);
+      form.submit();
+      setTimeout(() => form.remove(), 1500);
+    }
+
+    function sendNext() {
+      if (index >= items.length) {
+        status.textContent = '已完成 5/5。';
+        return;
+      }
+      status.textContent = `发送中 ${index + 1}/5`;
+      postItem(items[index]);
+      index += 1;
+    }
+
+    sink.addEventListener('load', () => {
+      if (!primed) {
+        primed = true;
+        sendNext();
+      } else if (index < items.length) {
+        setTimeout(sendNext, 1200);
+      } else {
+        status.textContent = '已完成 5/5。';
+      }
+    });
+  </script>
+</body>
+</html>
