@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AI Daily Brief Sender - Related Photos</title>
+  <style>
+    :root { color-scheme: dark; }
+    body {
+      margin: 0;
+      padding: 32px;
+      font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: linear-gradient(180deg, #08111f, #101827 52%, #0b1020 100%);
+      color: #e5e7eb;
+    }
+    .wrap { max-width: 980px; margin: 0 auto; }
+    .card {
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(148, 163, 184, 0.18);
+      border-radius: 18px;
+      box-shadow: 0 30px 80px rgba(0,0,0,.35);
+      padding: 24px 26px;
+    }
+    h1 { margin: 0 0 10px; font-size: 28px; letter-spacing: -0.02em; }
+    p { margin: 10px 0; line-height: 1.7; color: #cbd5e1; }
+    label { display: block; margin-top: 14px; margin-bottom: 6px; color: #cbd5e1; font-weight: 600; }
+    input { width: 100%; box-sizing: border-box; border: 1px solid rgba(148, 163, 184, 0.25); border-radius: 12px; background: rgba(15, 23, 42, 0.92); color: #e5e7eb; padding: 12px 14px; font: inherit; }
+    button { margin-top: 16px; border: 0; border-radius: 999px; padding: 12px 18px; background: linear-gradient(135deg, #38bdf8, #60a5fa); color: #08111f; font-weight: 800; cursor: pointer; }
+    button:disabled { opacity: 0.55; cursor: not-allowed; }
+    #status { margin-top: 18px; padding: 14px 16px; background: rgba(15, 23, 42, 0.9); border: 1px solid rgba(96, 165, 250, 0.18); border-radius: 12px; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; white-space: pre-wrap; min-height: 54px; }
+    ol { margin: 18px 0 0 22px; color: #dbeafe; line-height: 1.75; }
+    code { background: rgba(15, 23, 42, 0.8); padding: 2px 6px; border-radius: 8px; }
+    .hint { color: #94a3b8; font-size: 14px; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="card">
+      <h1>AI Daily Brief Sender - Related Photos</h1>
+      <p>这版优先发送与新闻内容直接相关的图片直链，不再用泛主题图。图片来自 AP、Reuters/MarketScreener、Microsoft、NVIDIA 和 OpenAI 官方资源。</p>
+      <p class="hint">支持在 URL fragment 里带上 <code>token</code> 和 <code>chat</code> 自动开始发送。</p>
+
+      <label for="token">Bot token</label>
+      <input id="token" type="password" placeholder="8879…" autocomplete="off">
+
+      <label for="chat">Chat ID</label>
+      <input id="chat" type="text" value="-1003777125000" autocomplete="off">
+
+      <button id="start">Start sending</button>
+      <div id="status">Idle.</div>
+
+      <ol>
+        <li>特朗普推迟签发 AI 行政令</li>
+        <li>白宫向 AI 公司通报模型审查计划</li>
+        <li>Anthropic 接洽 Microsoft AI 芯片</li>
+        <li>Lambda 拿下 HRT 与 Nvidia 算力合同</li>
+        <li>OpenAI 公布 80 年数学难题突破</li>
+      </ol>
+    </div>
+  </div>
+
+  <iframe name="sink" style="display:none"></iframe>
+  <form id="sendForm" method="POST" action="" target="sink" style="display:none">
+    <input type="hidden" name="chat_id" id="chat_id_field">
+    <input type="hidden" name="photo" id="photo_field">
+    <textarea name="caption" id="caption_field" style="display:none"></textarea>
+  </form>
+
+  <script>
+    const tokenInput = document.getElementById('token');
+    const chatInput = document.getElementById('chat');
+    const startButton = document.getElementById('start');
+    const status = document.getElementById('status');
+    const form = document.getElementById('sendForm');
+    const chatField = document.getElementById('chat_id_field');
+    const photoField = document.getElementById('photo_field');
+    const captionField = document.getElementById('caption_field');
+
+    const items = [
+      {
+        photo: 'https://assets.apnews.com/a5/5f/4cc4f03e2f94740bc974e888549b/df73c8529a9944ac9ecf5f5f326dc5cb',
+        caption: `2026-05-22｜AI 每日简报\n\n【AI 大事 1/5】特朗普推迟签发 AI 行政令\n\n一句话结论：美国 AI 监管与创新的拉扯又往前推进了一步。\n\n发生了什么：\n- AP 报道，特朗普取消了原定的 AI 行政令签署活动。\n- 这份命令原本会建立政府审查最先进 AI 系统安全风险的框架。\n\n为什么重要：白宫对模型审查的态度，会直接影响美国 AI 企业的发布节奏、合规成本和全球竞争策略。\n\n评分：\n影响力：★★★★★\n热度：★★★★★\n推荐阅读：高\n\n链接：\n来源：AP News https://apnews.com/article/trump-ai-executive-order-ee318f35acc8a2c43e47f3ebf26cb459`
+      },
+      {
+        photo: 'https://cdn.zonebourse.com/static/resize/768/432//images/reuters/2024-11/2024-11-20T053121Z_2_LYNXMPEKAB0MJ_RTROPTP_3_USA-CRIME-ABUSE-AI.JPG',
+        caption: `【AI 大事 2/5】白宫向 AI 公司通报模型审查计划\n\n一句话结论：美国政府正在把“先进模型上线前审查”推到更具体的政策层。\n\n发生了什么：\n- Reuters 报道，白宫国家安全办公室向领先 AI 公司简报一项拟议中的行政令。\n- 方案可能让情报和相关政府机构在模型发布前参与审查。\n\n为什么重要：如果模型审查机制常态化，前沿模型的发布、评测和政府合作都会被重新定价。\n\n评分：\n影响力：★★★★☆\n热度：★★★★☆\n推荐阅读：高\n\n链接：\n来源：Reuters / MarketScreener https://www.marketscreener.com/news/white-house-briefs-ai-firms-on-plans-for-model-review-the-information-reports-ce7f5ad9dc80f620`
+      },
+      {
+        photo: 'https://cdn.zonebourse.com/static/resize/768/432//images/reuters/2026-05/2026-05-11T112640Z_1_LYNXMPEM4A0PU_RTROPTP_4_ANTHROPIC-ALPHABET-INVESTMENT.JPG',
+        caption: `【AI 大事 3/5】Anthropic 传出接洽 Microsoft AI 芯片\n\n一句话结论：大模型公司在算力上继续走“多云、多芯片”布局。\n\n发生了什么：\n- Reuters 报道，Anthropic 正在与微软讨论使用其 AI 芯片做推理任务。\n- 这说明 Claude 的算力供给还在继续扩张和多元化。\n\n为什么重要：前沿模型竞争本质上也是算力合同、推理成本和供应链稳定性的竞争。\n\n评分：\n影响力：★★★★☆\n热度：★★★☆☆\n推荐阅读：中\n\n链接：\n来源：Reuters / MarketScreener https://www.marketscreener.com/news/anthropic-in-talks-to-use-microsoft-s-ai-chips-the-information-reports-ce7f5adedc8cf726`
+      },
+      {
+        photo: 'https://nvidianews.nvidia.com/_gallery/get_file/?file_id=65f7d1913d633238713719f6',
+        caption: `【AI 大事 4/5】Lambda 拿下 Hudson River Trading 云合作\n\n一句话结论：AI 算力租赁继续向高频交易等高要求客户渗透。\n\n发生了什么：\n- Reuters 报道，Lambda 赢得 Hudson River Trading 的云合同。\n- 合同核心是提供 Nvidia 芯片访问，用于 AI 训练与推理。\n\n为什么重要：这类合作说明 Nvidia 生态之外，围绕 GPU 的云服务和租赁市场仍在快速扩张。\n\n评分：\n影响力：★★★★☆\n热度：★★★☆☆\n推荐阅读：中\n\n链接：\n来源：Reuters / Investing.com https://www.investing.com/news/stock-market-news/lambda-wins-cloud-deal-with-hudson-river-trading-to-supply-access-to-nvidia-chips-4701550`
+      },
+      {
+        photo: 'https://images.ctfassets.net/kftzwdyauwt9/5O7KVsXhc0D5jWwgWv4AY3/2d2bf4cac37fe3d2fea4173f5e85fabb/Light_Mode.svg?q=90&w=3840',
+        caption: `【AI 大事 5/5】OpenAI 公布一项 80 年数学难题突破\n\n一句话结论：AI 正开始在可验证的数学研究里做出真正的新发现。\n\n发生了什么：\n- OpenAI 发布研究，称内部模型否定了离散几何中的一个核心猜想。\n- 该结果围绕 Erdős 在 1946 年提出的平面单位距离问题。\n\n为什么重要：如果通用推理模型能独立产出可验证证明，AI 不只是写作和编码助手，也可能成为研究伙伴。\n\n评分：\n影响力：★★★★★\n热度：★★★★☆\n推荐阅读：高\n\n链接：\n来源：OpenAI https://openai.com/index/model-disproves-discrete-geometry-conjecture/`
+      }
+    ];
+
+    function sleep(ms) { return new Promise(resolve => setTimeout(resolve, ms)); }
+
+    async function sendAll() {
+      const token = tokenInput.value.trim();
+      const chatId = chatInput.value.trim() || '-1003777125000';
+      if (!token) {
+        status.textContent = 'Please enter the bot token first.';
+        return;
+      }
+      startButton.disabled = true;
+      form.action = `https://api.telegram.org/bot${token}/sendPhoto`;
+      for (let i = 0; i < items.length; i++) {
+        const item = items[i];
+        chatField.value = chatId;
+        photoField.value = item.photo;
+        captionField.value = item.caption;
+        status.textContent = `Sending ${i + 1}/5`;
+        form.submit();
+        await sleep(5000);
+      }
+      status.textContent = 'Done: 5/5';
+      startButton.disabled = false;
+    }
+
+    function loadFragmentDefaults() {
+      const params = new URLSearchParams(location.hash.replace(/^#/, ''));
+      const token = params.get('token');
+      const chat = params.get('chat');
+      if (token) tokenInput.value = token;
+      if (chat) chatInput.value = chat;
+      return Boolean(token);
+    }
+
+    startButton.addEventListener('click', sendAll);
+    window.addEventListener('load', async () => {
+      if (loadFragmentDefaults()) {
+        await sleep(250);
+        sendAll();
+      }
+    });
+  </script>
+</body>
+</html>
